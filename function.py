@@ -190,6 +190,7 @@ def update_Width_Height_Video():
     Update_Code_Random_DB(data_Update_DB[2][0], data_Update_DB[1][0], data_Update_DB[0][0])
     print('/-- Update for VideoID: ', data_Update_DB[0][0], ' --/')
 
+
 # Hàm xóa hình photo trong DB ------------------------------------/
 def remove_Photo_DB(ChannelConfigID_Use):
     
