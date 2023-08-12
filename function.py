@@ -65,9 +65,6 @@ def getToken():
 
 TOKEN = getToken()
 
-# Value Global 
-value_Break_While = []
-
 # Kết nối với DB | Kiểm tra Data sử dụng trước khi chạy chương trình
 def connectDB():
     
@@ -192,9 +189,6 @@ def update_Width_Height_Video():
     data_Update_DB = get_Information_VideoID_New()
     Update_Code_Random_DB(data_Update_DB[2][0], data_Update_DB[1][0], data_Update_DB[0][0])
     print('/-- Update for VideoID: ', data_Update_DB[0][0], ' --/')
-    
-    # Thêm điều kiện để break While
-    if data_Update_DB[0][0] == "" : value_Break_While.insert(0,1)
 
 # Hàm xóa hình photo trong DB ------------------------------------/
 def remove_Photo_DB(ChannelConfigID_Use):
@@ -270,4 +264,3 @@ def remove_Photo_DB(ChannelConfigID_Use):
         
     remove_PhotoID(ChannelConfigID_Use)
     
-#remove_Photo_DB(1310)
