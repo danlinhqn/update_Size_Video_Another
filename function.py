@@ -66,7 +66,7 @@ def getToken():
 TOKEN = getToken()
 
 # Value Global 
-value_Break_While = []
+value_Break_While = [0]
 
 # Kết nối với DB | Kiểm tra Data sử dụng trước khi chạy chương trình
 def connectDB():
@@ -139,32 +139,32 @@ def update_Width_Height_Video():
     # Hàm lấy các ID video từ DB
     def get_Information_VideoID_New():
         
-            Data_Save = [[],[],[]]
+        Data_Save = [[],[],[]]
+        cur = connectDB().cursor()
 
-            cur = connectDB().cursor()
+        # Hàm hỗ trợ lấy dữ liệu ChannelConfigID + ID video tiktok + thời gian tải lên
+        
+        cur.execute( 'SELECT "VideoID", "RawPlayURL" FROM "Videos" WHERE "Height" IS NULL ORDER BY "VideoID" DESC LIMIT 1' )
 
-            # Hàm hỗ trợ lấy dữ liệu ChannelConfigID + ID video tiktok + thời gian tải lên
+        rows = cur.fetchall()
+
+        # Lưu vào Data => Chuẩn bị tới bước tiếp theo phân loại và xóa trash
+        for row in rows: 
             
-            cur.execute( 'SELECT "VideoID", "RawPlayURL" FROM "Videos" WHERE "Height" IS NULL ORDER BY "VideoID" DESC LIMIT 1' )
-
-            rows = cur.fetchall()
-
-            # Lưu vào Data => Chuẩn bị tới bước tiếp theo phân loại và xóa trash
-            for row in rows: 
-                
-                Data_Save[0].append(row[0])
-                
-                # Lấy width, height của video
-                height, width = get_video_dimensions(row[1])
-                Data_Save[1].append(height)
-                Data_Save[2].append(width)
-
-            # Ngắt kết nối khi lấy dữ liệu xong
-
-            cur.close()
-            connectDB().close()
+            Data_Save[0].append(row[0])
             
-            return Data_Save
+            # Lấy width, height của video
+            height, width = get_video_dimensions(row[1])
+            Data_Save[1].append(height)
+            Data_Save[2].append(width)
+
+        # Ngắt kết nối khi lấy dữ liệu xong
+
+        cur.close()
+        connectDB().close()
+        
+        return Data_Save
+
     
     # Hàm update lại Code random cho DB Photos
     def Update_Code_Random_DB(Height ,Width, VideoID):
@@ -190,11 +190,16 @@ def update_Width_Height_Video():
     
     # Chạy test
     data_Update_DB = get_Information_VideoID_New()
-    Update_Code_Random_DB(data_Update_DB[2][0], data_Update_DB[1][0], data_Update_DB[0][0])
-    print('/-- Update for VideoID: ', data_Update_DB[0][0], ' --/')
+
+    if len(data_Update_DB[0]) > 0:
+        
+        Update_Code_Random_DB(data_Update_DB[2][0], data_Update_DB[1][0], data_Update_DB[0][0])
+        print('/-- Update for VideoID: ', data_Update_DB[0][0], ' --/')
     
     # Thêm điều kiện để break While
-    if data_Update_DB[0][0] == "" : value_Break_While.insert(0,1)
+    else: 
+        print("Không còn VideoID nào cần update")
+        value_Break_While.insert(0,1)
 
 # Hàm xóa hình photo trong DB ------------------------------------/
 def remove_Photo_DB(ChannelConfigID_Use):
